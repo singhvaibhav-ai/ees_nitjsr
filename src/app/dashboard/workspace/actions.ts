@@ -16,7 +16,7 @@ function errorMessage(e: unknown): string {
 
 async function verifyStaffAccess(eventId: string) {
   const { supabase, profile } = await requireProfile("/dashboard/workspace");
-  if (profile.is_admin) return { supabase, profile };
+  if (profile.is_admin) return { supabase, profile, isHeadOrAdmin: true };
 
   const { data: staff } = await supabase
     .from("event_staff")
@@ -26,15 +26,20 @@ async function verifyStaffAccess(eventId: string) {
     .maybeSingle();
 
   if (!staff) throw new Error("You are not authorized as staff for this event.");
-  return { supabase, profile };
+  return { supabase, profile, isHeadOrAdmin: staff.role === "head" };
 }
 
 export async function setStaffRegistrationStatus(_: ActionState, f: FormData): Promise<ActionState> {
   try {
     const eventId = s(f, "event_id");
-    const { supabase } = await verifyStaffAccess(eventId);
+    const { supabase, isHeadOrAdmin } = await verifyStaffAccess(eventId);
     const regId = s(f, "registration_id");
     const status = s(f, "status");
+
+    // Only Admins and Event Heads can approve or cancel registrations
+    if (status !== "checkin" && !isHeadOrAdmin) {
+      throw new Error("Only Event Heads and Admins can approve or cancel registrations. Volunteers can mark check-in only.");
+    }
 
     const patch: Record<string, unknown> =
       status === "checkin" ? { checked_in_at: new Date().toISOString() } : { status };

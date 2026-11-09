@@ -25,7 +25,7 @@ export default async function Pravardhan() {
     <>
       <section className="bg-ink text-white">
         <div className="container-x flex flex-col items-center py-16 text-center">
-          <Image src="/images/pravardhan-logo.png" alt="Pravardhan" width={1400} height={488} className="h-24 w-auto sm:h-32" priority />
+          <Image src="/images/pravardhan-2026-logo.png" alt="Pravardhan 2026" width={1400} height={488} className="h-28 w-auto sm:h-40 object-contain drop-shadow-[0_10px_20px_rgba(255,255,255,0.15)]" priority />
           <h1 className="mt-6 text-4xl font-bold sm:text-5xl">{fest?.name ?? "Pravardhan"}</h1>
           <p className="mt-3 max-w-2xl text-white/80">
             {fest?.tagline ?? "The annual techno-cultural fest of the Electrical Engineering Society, NIT Jamshedpur."}

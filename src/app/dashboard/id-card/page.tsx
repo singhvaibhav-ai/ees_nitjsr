@@ -5,8 +5,9 @@ import { headers } from "next/headers";
 import QRCode from "qrcode";
 import { requireProfile, getMembership } from "@/lib/session";
 import { verifyUrl } from "@/lib/idcard";
+import { IdCardActions } from "./download-buttons";
 
-export const metadata: Metadata = { title: "My ID card" };
+export const metadata: Metadata = { title: "My ID card · EES NIT Jamshedpur" };
 
 export default async function IdCardPage() {
   const { supabase, profile } = await requireProfile("/dashboard/id-card");
@@ -19,9 +20,9 @@ export default async function IdCardPage() {
 
   return (
     <div className="container-x py-10">
-      <Link href="/dashboard" className="no-print text-sm text-brand">← My EES</Link>
+      <Link href="/dashboard" className="no-print text-sm font-semibold text-brand">← Back to Dashboard</Link>
       <div className="mt-6 flex flex-col items-center gap-6">
-        <div className="w-full max-w-sm overflow-hidden rounded-2xl border-2 border-ink bg-white shadow-[6px_6px_0_0_#0f172a]">
+        <div id="print-card" className="w-full max-w-sm overflow-hidden rounded-2xl border-2 border-ink bg-white shadow-[6px_6px_0_0_#0f172a]">
           <div className="flex items-center justify-between bg-brand px-5 py-3 text-white">
             <div>
               <p className="font-display text-lg font-bold leading-tight">Electrical Engineering Society</p>
@@ -41,21 +42,28 @@ export default async function IdCardPage() {
             )}
             <div className="min-w-0 text-sm">
               <p className="font-display text-xl font-bold leading-tight">{profile.full_name}</p>
-              <p className="mt-1 font-mono">{profile.reg_no}</p>
-              <p>Batch {profile.batch} · {profile.programme} {profile.branch}</p>
-              <p className="mt-2 inline-block rounded bg-sun px-2 py-0.5 font-mono text-xs font-bold">{membership.member_no}</p>
+              <p className="mt-1 font-mono font-semibold">{profile.reg_no}</p>
+              <p className="text-xs text-muted">Batch {profile.batch} · {profile.programme} {profile.branch}</p>
+              <div className="mt-2 flex flex-wrap items-center gap-1.5">
+                <span className="rounded bg-sun px-2 py-0.5 font-mono text-xs font-bold border border-ink/10">{membership.member_no}</span>
+                {profile.pid && (
+                  <span className="rounded bg-brand text-white px-2 py-0.5 font-mono text-xs font-bold">{profile.pid}</span>
+                )}
+              </div>
             </div>
           </div>
-          <div className="flex items-center justify-between border-t border-line px-5 py-3">
+          <div className="flex items-center justify-between border-t border-line px-5 py-3 bg-slate-50">
             <p className="text-xs text-muted">Scan to verify membership</p>
             <div className="h-16 w-16" dangerouslySetInnerHTML={{ __html: qr }} />
           </div>
         </div>
-        <div className="no-print flex gap-3">
-          <a href="/dashboard/id-card/image" download={`EES-ID-${membership.member_no}.png`} className="btn-primary">
-            Download image
-          </a>
-          <Link href="/dashboard/profile" className="btn-outline">Change photo</Link>
+
+        <IdCardActions memberNo={membership.member_no} />
+        
+        <div className="no-print">
+          <Link href="/dashboard/profile" className="text-xs text-muted hover:text-brand underline">
+            Need to update your profile or photo? Go to profile settings →
+          </Link>
         </div>
       </div>
     </div>

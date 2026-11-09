@@ -49,8 +49,8 @@ export function LoginForm({ next, initialError }: { next: string; initialError?:
     setError("");
     setSuccessMsg("");
 
-    if (password.length < 6) {
-      setError("Password must be at least 6 characters long.");
+    if (password.length < 8) {
+      setError("Password must be at least 8 characters long.");
       setBusy(false);
       return;
     }
@@ -206,10 +206,10 @@ export function LoginForm({ next, initialError }: { next: string; initialError?:
                 id="signup-password"
                 type={showPassword ? "text" : "password"}
                 required
-                minLength={6}
+                minLength={8}
                 autoComplete="new-password"
                 className="input pl-9 pr-10"
-                placeholder="Min 6 characters"
+                placeholder="Min 8 characters"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
               />
@@ -234,7 +234,7 @@ export function LoginForm({ next, initialError }: { next: string; initialError?:
                 id="signup-confirm-password"
                 type={showPassword ? "text" : "password"}
                 required
-                minLength={6}
+                minLength={8}
                 autoComplete="new-password"
                 className="input pl-9"
                 placeholder="Repeat your password"

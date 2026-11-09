@@ -317,6 +317,19 @@ export async function savePost(_: ActionState, f: FormData): Promise<ActionState
   return { ok: "Saved" };
 }
 
+export async function deletePost(_: ActionState, f: FormData): Promise<ActionState> {
+  try {
+    const { supabase } = await admin();
+    const id = s(f, "id");
+    const { error } = await supabase.from("posts").delete().eq("id", id);
+    if (error) throw error;
+    revalidatePath("/", "layout");
+  } catch (e) {
+    return { error: errorMessage(e) };
+  }
+  redirect("/admin/posts");
+}
+
 // ---------- settings ----------
 
 export async function saveAccount(_: ActionState, f: FormData): Promise<ActionState> {

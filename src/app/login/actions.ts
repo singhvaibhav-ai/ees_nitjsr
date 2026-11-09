@@ -16,8 +16,8 @@ export async function signUpAction(formData: FormData): Promise<AuthResult> {
   if (!email || !email.includes("@")) {
     return { error: "Please enter a valid email address." };
   }
-  if (!password || password.length < 6) {
-    return { error: "Password must be at least 6 characters long." };
+  if (!password || password.length < 8) {
+    return { error: "Password must be at least 8 characters long." };
   }
   if (password !== confirmPassword) {
     return { error: "Passwords do not match." };
@@ -48,3 +48,4 @@ export async function signUpAction(formData: FormData): Promise<AuthResult> {
   if (error) return { error: error.message };
   return { ok: true };
 }
+

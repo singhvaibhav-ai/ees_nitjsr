@@ -183,7 +183,18 @@ function MembershipBlock({
         {!profile.avatar_url && (
           <p className="text-sm text-amber-800">Add a photo in your profile so it shows on your ID card.</p>
         )}
-        <Link href="/dashboard/id-card" className="btn-sun">View my ID card</Link>
+        <div className="flex flex-wrap items-center gap-3 pt-1">
+          <Link href="/dashboard/id-card" className="btn-sun">
+            View & Download ID Card
+          </Link>
+          <a
+            href="/dashboard/id-card/image"
+            download={`EES-ID-${membership.member_no}.png`}
+            className="btn-outline btn-sm font-semibold"
+          >
+            Download PNG
+          </a>
+        </div>
       </div>
     );
   }

@@ -32,6 +32,7 @@ export default async function EventWorkspaceDetail({ params }: { params: Promise
 
   // Check authorization: user must be admin or in event_staff
   let authorized = profile.is_admin;
+  let staffRole: string | null = profile.is_admin ? "admin" : null;
   if (!authorized) {
     const { data: staff } = await supabase
       .from("event_staff")
@@ -40,7 +41,10 @@ export default async function EventWorkspaceDetail({ params }: { params: Promise
       .eq("user_id", profile.id)
       .maybeSingle();
     authorized = Boolean(staff);
+    staffRole = staff?.role ?? null;
   }
+
+  const isHeadOrAdmin = profile.is_admin || staffRole === "head";
 
   if (!authorized) {
     redirect("/dashboard/workspace");
@@ -205,14 +209,14 @@ export default async function EventWorkspaceDetail({ params }: { params: Promise
                             <input type="hidden" name="status" value="checkin" />
                           </ActionForm>
                         )}
-                        {r.status === "pending_approval" && (
+                        {isHeadOrAdmin && r.status === "pending_approval" && (
                           <ActionForm action={setStaffRegistrationStatus} submit="Approve" submitClass="btn-sun btn-sm">
                             <input type="hidden" name="event_id" value={id} />
                             <input type="hidden" name="registration_id" value={r.id} />
                             <input type="hidden" name="status" value="confirmed" />
                           </ActionForm>
                         )}
-                        {r.status !== "cancelled" && (
+                        {isHeadOrAdmin && r.status !== "cancelled" && (
                           <ActionForm action={setStaffRegistrationStatus} submit="Cancel" submitClass="btn-danger btn-sm" confirm="Cancel this registration?">
                             <input type="hidden" name="event_id" value={id} />
                             <input type="hidden" name="registration_id" value={r.id} />

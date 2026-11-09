@@ -38,9 +38,9 @@ export default async function EditProfile() {
               name="password"
               type="password"
               required
-              minLength={6}
+              minLength={8}
               className="input"
-              placeholder="Min 6 characters"
+              placeholder="Min 8 characters"
             />
           </div>
           <div>
@@ -50,7 +50,7 @@ export default async function EditProfile() {
               name="confirm_password"
               type="password"
               required
-              minLength={6}
+              minLength={8}
               className="input"
               placeholder="Repeat your new password"
             />

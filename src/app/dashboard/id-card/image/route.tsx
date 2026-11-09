@@ -41,8 +41,11 @@ export async function GET(request: NextRequest) {
             <div style={{ fontSize: 52, fontWeight: 800, color: "#0f172a" }}>{profile.full_name ?? ""}</div>
             <div style={{ fontSize: 34, marginTop: 12, color: "#0f172a" }}>{profile.reg_no ?? ""}</div>
             <div style={{ fontSize: 30, marginTop: 8, color: "#475569" }}>{`Batch ${profile.batch} · ${profile.programme} ${profile.branch}`}</div>
-            <div style={{ display: "flex", marginTop: 24 }}>
+            <div style={{ display: "flex", gap: 16, marginTop: 24, alignItems: "center" }}>
               <div style={{ background: "#ffd600", padding: "8px 16px", fontSize: 32, fontWeight: 800, borderRadius: 8 }}>{m.member_no}</div>
+              {profile.pid && (
+                <div style={{ background: "#0052ff", color: "#fff", padding: "8px 16px", fontSize: 30, fontWeight: 800, borderRadius: 8 }}>{profile.pid}</div>
+              )}
             </div>
           </div>
           {/* eslint-disable-next-line @next/next/no-img-element */}

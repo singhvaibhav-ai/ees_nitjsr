@@ -116,8 +116,8 @@ export async function changePasswordAction(_: ActionState, formData: FormData): 
   const password = String(formData.get("password") ?? "");
   const confirmPassword = String(formData.get("confirm_password") ?? "");
 
-  if (password.length < 6) {
-    return { error: "Password must be at least 6 characters long." };
+  if (password.length < 8) {
+    return { error: "Password must be at least 8 characters long." };
   }
   if (password !== confirmPassword) {
     return { error: "Passwords do not match." };

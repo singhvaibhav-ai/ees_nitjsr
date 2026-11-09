@@ -52,7 +52,7 @@ export default async function Home() {
       {fest && (
         <section className="bg-ink text-white">
           <Link href="/pravardhan" className="container-x flex flex-col items-center gap-6 py-10 sm:flex-row sm:justify-between">
-            <Image src="/images/pravardhan-logo.png" alt="Pravardhan" width={1400} height={488} className="h-16 w-auto" />
+            <Image src="/images/pravardhan-2026-logo.png" alt="Pravardhan 2026" width={1400} height={488} className="h-20 w-auto object-contain" />
             <div className="text-center sm:text-right">
               <p className="font-display text-2xl font-bold">{fest.name}</p>
               <p className="text-white/80">

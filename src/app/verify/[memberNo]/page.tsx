@@ -146,9 +146,13 @@ export default async function Verify({ params }: { params: Promise<{ memberNo: s
                     <ShieldCheck size={12} className="inline mr-1" />
                     Active EES Member {user.member_no ? `(${user.member_no})` : ""}
                   </span>
+                ) : user.events.length > 0 ? (
+                  <span className="badge bg-blue-100 text-blue-800 border border-blue-400">
+                    Registered for {user.events.length} Event{user.events.length > 1 ? "s" : ""}
+                  </span>
                 ) : (
-                  <span className="badge bg-slate-100 text-slate-700 border border-slate-300">
-                    Pravardhan Participant
+                  <span className="badge bg-amber-100 text-amber-800 border border-amber-300">
+                    Student Account · No Active Registrations
                   </span>
                 )}
               </div>
