@@ -95,7 +95,7 @@ export default async function EventPage({ params }: { params: Promise<{ slug: st
         <aside className="lg:sticky lg:top-24 lg:self-start">
           <div className="card space-y-4">
             <h2 className="text-xl font-bold">Registration</h2>
-            <RegistrationPanel e={e} signedIn={!!user} onboarded={!!profile?.onboarded} status={status} account={account} userId={user?.id} />
+            <RegistrationPanel e={e} signedIn={!!user} onboarded={!!profile?.onboarded} status={status} account={account} userId={user?.id} pid={profile?.pid} />
           </div>
         </aside>
       </div>
@@ -119,6 +119,7 @@ function RegistrationPanel({
   status,
   account,
   userId,
+  pid,
 }: {
   e: EventRow;
   signedIn: boolean;
@@ -126,6 +127,7 @@ function RegistrationPanel({
   status: MyStatus | null;
   account: PaymentAccount | null;
   userId?: string;
+  pid?: string | null;
 }) {
   if (e.status === "completed") return <p className="text-muted">This event is over.</p>;
   if (!signedIn)
@@ -149,6 +151,12 @@ function RegistrationPanel({
     const isLeader = !team || team.leader_id === userId;
     return (
       <div className="space-y-4 text-sm">
+        {pid && (
+          <div className="flex items-center justify-between rounded-lg border-2 border-brand/20 bg-brand/5 p-2.5">
+            <span className="text-xs font-semibold text-muted">Pravardhan ID:</span>
+            <span className="font-mono text-xs font-bold text-brand">{pid}</span>
+          </div>
+        )}
         {reg && <p className="text-base">Status: <b>{STATUS_LABELS[reg.status] ?? reg.status}</b></p>}
         {team && (
           <div className="rounded-lg bg-slate-50 p-3">

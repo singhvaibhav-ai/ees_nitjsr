@@ -6,7 +6,7 @@ import { ActionForm } from "@/components/forms";
 import { dateOnly, rupees, STATUS_LABELS } from "@/lib/format";
 import type { Drive, PaymentAccount, Profile, Membership } from "@/lib/types";
 import { submitMembership } from "./actions";
-import { CalendarCheck, ArrowRight } from "lucide-react";
+import { CalendarCheck, ArrowRight, Trophy, QrCode } from "lucide-react";
 
 export const metadata: Metadata = { title: "My EES" };
 
@@ -85,6 +85,35 @@ export default async function Dashboard() {
           <Link href="/dashboard/workspace" className="btn-primary btn-sm flex items-center gap-1.5 self-start sm:self-auto">
             <span>Open Workspace</span>
             <ArrowRight size={14} />
+          </Link>
+        </div>
+      )}
+
+      {/* Pravardhan Pass & P-ID Banner */}
+      {profile.pid && (
+        <div className="mt-6 flex flex-col justify-between gap-4 rounded-xl border-2 border-ink bg-slate-900 p-5 text-white shadow-[4px_4px_0_0_#facc15] sm:flex-row sm:items-center">
+          <div className="flex items-center gap-3">
+            <div className="flex h-12 w-12 items-center justify-center rounded-lg border border-sun bg-sun/10 text-sun shrink-0">
+              <Trophy size={24} />
+            </div>
+            <div>
+              <div className="flex items-center gap-2">
+                <span className="text-xs font-bold uppercase tracking-wider text-sun">Pravardhan 2026 Pass</span>
+                <span className="rounded bg-sun/20 px-2 py-0.5 font-mono text-xs font-bold text-sun border border-sun/30">
+                  {profile.pid}
+                </span>
+              </div>
+              <p className="mt-1 text-xs text-slate-300">
+                Your unique Pravardhan ID. Event coordinators scan or verify this for venue entry and event registration status.
+              </p>
+            </div>
+          </div>
+          <Link
+            href={`/verify/${profile.pid}`}
+            className="btn-sun btn-sm flex items-center gap-1.5 self-start text-ink sm:self-auto font-bold shrink-0"
+          >
+            <QrCode size={14} />
+            <span>View Pass & Registrations</span>
           </Link>
         </div>
       )}

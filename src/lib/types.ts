@@ -12,6 +12,7 @@ export type Profile = {
   programme: string | null;
   branch: string | null;
   roll: string | null;
+  pid: string | null;
   is_admin: boolean;
   onboarded: boolean;
 };

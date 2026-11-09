@@ -4,6 +4,7 @@ import { csvResponse, toCsv } from "@/lib/csv";
 type Person = {
   full_name: string | null;
   reg_no: string | null;
+  pid?: string | null;
   email: string;
   phone: string | null;
   college: string | null;
@@ -41,7 +42,7 @@ export async function GET(_: Request, { params }: { params: Promise<{ id: string
   const { data } = await supabase
     .from("registrations")
     .select(
-      "status, fee_paise, checked_in_at, created_at, profiles(full_name, reg_no, email, phone, college, batch, branch), teams(name, team_members(profiles(full_name, reg_no, email, phone, college, batch, branch)))"
+      "status, fee_paise, checked_in_at, created_at, profiles(full_name, reg_no, pid, email, phone, college, batch, branch), teams(name, team_members(profiles(full_name, reg_no, pid, email, phone, college, batch, branch)))"
     )
     .eq("event_id", id)
     .order("created_at");
@@ -49,6 +50,7 @@ export async function GET(_: Request, { params }: { params: Promise<{ id: string
   const head = [
     "team",
     "name",
+    "p_id",
     "reg_no",
     "batch",
     "branch",
@@ -68,6 +70,7 @@ export async function GET(_: Request, { params }: { params: Promise<{ id: string
       rows.push([
         team?.name ?? "",
         p?.full_name ?? "",
+        p?.pid ?? "",
         p?.reg_no ?? "",
         p?.batch ?? "",
         p?.branch ?? "",

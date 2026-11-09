@@ -21,6 +21,7 @@ export function Footer() {
           <Link href="/gallery" className="hover:text-brand">Photo Gallery</Link>
           <Link href="/faculty" className="hover:text-brand">Faculty Directory & ID</Link>
           <Link href="/updates" className="hover:text-brand">Notices & Updates</Link>
+          <Link href="/verify" className="hover:text-brand font-medium text-brand">Verify P-ID & Credentials</Link>
           <Link href="/about" className="hover:text-brand">About & Core Team</Link>
         </div>
         <div className="text-sm">

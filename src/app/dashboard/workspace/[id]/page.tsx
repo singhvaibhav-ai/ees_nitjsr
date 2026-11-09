@@ -16,11 +16,11 @@ type Reg = {
   fee_paise: number;
   checked_in_at: string | null;
   created_at: string;
-  profiles: { full_name: string | null; reg_no: string | null; email: string; phone: string | null; college: string | null } | null;
+  profiles: { full_name: string | null; reg_no: string | null; pid?: string | null; email: string; phone: string | null; college: string | null } | null;
   teams: {
     name: string;
     code: string;
-    team_members: { profiles: { full_name: string | null; reg_no: string | null; email: string; phone: string | null; college: string | null } | null }[];
+    team_members: { profiles: { full_name: string | null; reg_no: string | null; pid?: string | null; email: string; phone: string | null; college: string | null } | null }[];
   } | null;
 };
 
@@ -53,7 +53,7 @@ export default async function EventWorkspaceDetail({ params }: { params: Promise
     supabase
       .from("registrations")
       .select(
-        "id, status, fee_paise, checked_in_at, created_at, profiles(full_name, reg_no, email, phone, college), teams(name, code, team_members(profiles(full_name, reg_no, email, phone, college)))"
+        "id, status, fee_paise, checked_in_at, created_at, profiles(full_name, reg_no, pid, email, phone, college), teams(name, code, team_members(profiles(full_name, reg_no, pid, email, phone, college)))"
       )
       .eq("event_id", id)
       .order("created_at"),
@@ -155,8 +155,13 @@ export default async function EventWorkspaceDetail({ params }: { params: Promise
                           <span className="font-mono text-xs text-muted">Code: {r.teams.code}</span>
                           <ul className="mt-1 text-xs space-y-0.5">
                             {r.teams.team_members.map((m, i) => (
-                              <li key={i} className="text-slate-700">
-                                • {m.profiles?.full_name} ({m.profiles?.reg_no ?? m.profiles?.college})
+                              <li key={i} className="text-slate-700 flex items-center gap-1.5">
+                                <span>• {m.profiles?.full_name} ({m.profiles?.reg_no ?? m.profiles?.college})</span>
+                                {m.profiles?.pid && (
+                                  <span className="font-mono text-[10px] bg-slate-200 text-slate-800 px-1 py-0.5 rounded font-bold">
+                                    {m.profiles.pid}
+                                  </span>
+                                )}
                               </li>
                             ))}
                           </ul>
@@ -164,7 +169,14 @@ export default async function EventWorkspaceDetail({ params }: { params: Promise
                       ) : (
                         <div>
                           <p className="font-bold">{r.profiles?.full_name ?? "Participant"}</p>
-                          <p className="text-xs font-mono text-muted">{r.profiles?.reg_no ?? r.profiles?.college}</p>
+                          <div className="flex flex-wrap items-center gap-1.5 text-xs font-mono text-muted">
+                            <span>{r.profiles?.reg_no ?? r.profiles?.college}</span>
+                            {r.profiles?.pid && (
+                              <span className="font-mono text-[10px] bg-brand/10 text-brand px-1.5 py-0.5 rounded font-bold border border-brand/20">
+                                {r.profiles.pid}
+                              </span>
+                            )}
+                          </div>
                         </div>
                       )}
                     </td>
