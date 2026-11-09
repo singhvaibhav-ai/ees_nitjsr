@@ -6,6 +6,9 @@ import { getSession } from "@/lib/session";
 const links = [
   { href: "/events", label: "Events" },
   { href: "/pravardhan", label: "Pravardhan" },
+  { href: "/epl", label: "EPL" },
+  { href: "/gallery", label: "Gallery" },
+  { href: "/faculty", label: "Faculty" },
   { href: "/updates", label: "Updates" },
   { href: "/about", label: "About" },
 ];
@@ -40,15 +43,15 @@ export async function Nav() {
           <Image src="/images/ees-logo-transparent.png" alt="EES" width={40} height={40} className="h-10 w-auto" />
           <span className="font-display text-lg font-bold">EES NIT JSR</span>
         </Link>
-        <div className="hidden items-center gap-6 text-sm font-semibold md:flex">
+        <div className="hidden items-center gap-5 text-sm font-semibold lg:flex">
           {links.map((l) => (
             <Link key={l.href} href={l.href} className="hover:text-brand">
               {l.label}
             </Link>
           ))}
         </div>
-        <div className="hidden items-center gap-2 md:flex">{account}</div>
-        <details className="relative md:hidden">
+        <div className="hidden items-center gap-2 lg:flex">{account}</div>
+        <details className="relative lg:hidden">
           <summary className="btn-outline btn-sm list-none" aria-label="Menu">
             <Menu size={18} />
           </summary>

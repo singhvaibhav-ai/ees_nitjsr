@@ -6,6 +6,7 @@ import { ActionForm } from "@/components/forms";
 import { dateOnly, rupees, STATUS_LABELS } from "@/lib/format";
 import type { Drive, PaymentAccount, Profile, Membership } from "@/lib/types";
 import { submitMembership } from "./actions";
+import { CalendarCheck, ArrowRight } from "lucide-react";
 
 export const metadata: Metadata = { title: "My EES" };
 
@@ -36,6 +37,14 @@ export default async function Dashboard() {
     .select("teams(name, leader_id), events(slug, title, starts_at)")
     .eq("user_id", profile.id);
 
+  // Check event staff access
+  const { data: staffRows } = await supabase
+    .from("event_staff")
+    .select("event_id, role")
+    .eq("user_id", profile.id);
+
+  const isStaff = (staffRows && staffRows.length > 0) || profile.is_admin;
+
   const mine: MyEvent[] = [];
   for (const r of regs ?? []) {
     const e = r.events as unknown as { slug: string; title: string; starts_at: string | null } | null;
@@ -56,6 +65,29 @@ export default async function Dashboard() {
           ? `${profile.reg_no} · Batch ${profile.batch} · ${profile.programme} ${profile.branch}`
           : profile.college ?? profile.email}
       </p>
+
+      {/* Event Staff Workspace Banner */}
+      {isStaff && (
+        <div className="mt-6 flex flex-col justify-between gap-4 rounded-xl border-2 border-ink bg-sun/20 p-5 shadow-[4px_4px_0_0_#0f172a] sm:flex-row sm:items-center">
+          <div className="flex items-center gap-3">
+            <div className="flex h-10 w-10 items-center justify-center rounded-lg border-2 border-ink bg-sun text-ink">
+              <CalendarCheck size={20} />
+            </div>
+            <div>
+              <p className="font-bold text-ink">Event Staff & Lead Workspace</p>
+              <p className="text-xs text-muted">
+                {profile.is_admin
+                  ? "Admin privileges: manage registrations, attendee check-ins, and results across events"
+                  : `You are assigned as staff for ${staffRows?.length ?? 1} event(s)`}
+              </p>
+            </div>
+          </div>
+          <Link href="/dashboard/workspace" className="btn-primary btn-sm flex items-center gap-1.5 self-start sm:self-auto">
+            <span>Open Workspace</span>
+            <ArrowRight size={14} />
+          </Link>
+        </div>
+      )}
 
       <div className="mt-8 grid gap-6 lg:grid-cols-[2fr_1fr]">
         <section className="card">
