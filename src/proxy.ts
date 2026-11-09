@@ -5,6 +5,18 @@ import { NextResponse, type NextRequest } from "next/server";
 // away from pages that need an account. Role checks happen in the pages and
 // in the database, not here.
 export async function proxy(request: NextRequest) {
+  // If the request has an auth code from Supabase (e.g. from an email magic link)
+  // and didn't land directly on /auth/callback, forward it to the callback handler.
+  const code = request.nextUrl.searchParams.get("code");
+  if (code && !request.nextUrl.pathname.startsWith("/auth/callback")) {
+    const callbackUrl = new URL("/auth/callback", request.nextUrl.origin);
+    callbackUrl.searchParams.set("code", code);
+    const nextParam = request.nextUrl.searchParams.get("next");
+    const next = nextParam || (request.nextUrl.pathname !== "/" ? request.nextUrl.pathname : "/dashboard");
+    callbackUrl.searchParams.set("next", next);
+    return NextResponse.redirect(callbackUrl);
+  }
+
   let response = NextResponse.next({ request });
 
   const supabase = createServerClient(
