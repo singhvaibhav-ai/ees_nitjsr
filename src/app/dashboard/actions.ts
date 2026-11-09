@@ -105,3 +105,27 @@ export async function submitEventPayment(_: ActionState, formData: FormData): Pr
   revalidatePath("/", "layout");
   return { ok: "Payment submitted for approval." };
 }
+
+export async function changePasswordAction(_: ActionState, formData: FormData): Promise<ActionState> {
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) return { error: "Please sign in again" };
+
+  const password = String(formData.get("password") ?? "");
+  const confirmPassword = String(formData.get("confirm_password") ?? "");
+
+  if (password.length < 6) {
+    return { error: "Password must be at least 6 characters long." };
+  }
+  if (password !== confirmPassword) {
+    return { error: "Passwords do not match." };
+  }
+
+  const { error } = await supabase.auth.updateUser({ password });
+  if (error) return { error: errorMessage(error) };
+
+  revalidatePath("/dashboard/profile");
+  return { ok: "Password updated successfully!" };
+}
