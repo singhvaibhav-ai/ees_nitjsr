@@ -319,10 +319,12 @@ export async function savePost(_: ActionState, f: FormData): Promise<ActionState
       id = data.id;
     }
     revalidatePath("/", "layout");
+    revalidatePath("/admin/posts");
+    revalidatePath("/updates");
   } catch (e) {
     return { error: errorMessage(e) };
   }
-  if (!s(f, "id")) redirect(`/admin/posts/${id}`);
+  if (!s(f, "id")) redirect("/admin/posts");
   return { ok: "Saved" };
 }
 

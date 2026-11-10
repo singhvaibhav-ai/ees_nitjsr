@@ -12,8 +12,16 @@ export default function ErrorBoundary({
   reset: () => void;
 }) {
   useEffect(() => {
+    // If it's Next.js internal redirect, let Next.js handle it
+    if (error?.message === "NEXT_REDIRECT" || error?.digest?.startsWith("NEXT_REDIRECT")) {
+      return;
+    }
     console.error("App runtime error:", error);
   }, [error]);
+
+  if (error?.message === "NEXT_REDIRECT" || error?.digest?.startsWith("NEXT_REDIRECT")) {
+    return null;
+  }
 
   return (
     <div className="container-x py-20 flex flex-col items-center justify-center text-center">
@@ -22,14 +30,16 @@ export default function ErrorBoundary({
       </div>
       <h1 className="text-2xl font-bold font-display">Something went wrong</h1>
       <p className="mt-2 text-sm text-muted max-w-md">
-        Please make sure you are signed in with an authorized account or try reloading the page.
+        {error?.message && error.message !== "NEXT_REDIRECT"
+          ? error.message
+          : "An unexpected error occurred while loading this page. Please try again."}
       </p>
       <div className="mt-6 flex flex-wrap gap-3 justify-center">
         <button onClick={() => reset()} className="btn-primary btn-sm">
           Try again
         </button>
-        <Link href="/login" className="btn-outline btn-sm">
-          Sign In
+        <Link href="/admin" className="btn-outline btn-sm">
+          Admin Dashboard
         </Link>
         <Link href="/" className="btn-outline btn-sm">
           Go to Homepage
@@ -38,4 +48,3 @@ export default function ErrorBoundary({
     </div>
   );
 }
-
