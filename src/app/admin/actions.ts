@@ -3,15 +3,22 @@
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
+import { createAdminClient } from "@/lib/supabase/admin";
 import { errorMessage } from "@/lib/session";
 import { fromLocalInput, slugify } from "@/lib/format";
 import type { ActionState } from "@/lib/types";
 
 async function admin() {
   const supabase = await createClient();
-  const {
+  let {
     data: { user },
   } = await supabase.auth.getUser();
+
+  if (!user) {
+    const { data: sessionData } = await supabase.auth.getSession();
+    user = sessionData?.session?.user ?? null;
+  }
+
   if (!user) throw new Error("Please sign in again");
   const { data } = await supabase.from("profiles").select("is_admin").eq("id", user.id).single();
   if (!data?.is_admin) throw new Error("Admins only");
@@ -27,12 +34,14 @@ const textList = (v: string) => v.split(/[\s,]+/).filter(Boolean).map((x) => x.t
 async function uploadMedia(file: FormDataEntryValue | null, folder: string) {
   if (!(file instanceof File) || file.size === 0) return null;
   if (file.size > 4 * 1024 * 1024) throw new Error("Files must be under 4 MB");
+  const adminClient = createAdminClient();
   const { supabase } = await admin();
+  const storageClient = adminClient || supabase;
   const ext = (file.name.split(".").pop() || "bin").toLowerCase().replace(/[^a-z0-9]/g, "");
   const path = `${folder}/${Date.now()}.${ext}`;
-  const { error } = await supabase.storage.from("media").upload(path, file, { contentType: file.type });
+  const { error } = await storageClient.storage.from("media").upload(path, file, { contentType: file.type });
   if (error) throw error;
-  return supabase.storage.from("media").getPublicUrl(path).data.publicUrl;
+  return storageClient.storage.from("media").getPublicUrl(path).data.publicUrl;
 }
 
 // ---------- payments ----------

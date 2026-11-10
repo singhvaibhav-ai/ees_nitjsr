@@ -1,13 +1,11 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
-import { signUpAction } from "./actions";
+import { signInAction, signUpAction } from "./actions";
 import { Eye, EyeOff, Lock, Mail, Clock } from "lucide-react";
 
 export function LoginForm({ next, initialError }: { next: string; initialError?: string }) {
-  const router = useRouter();
   const [tab, setTab] = useState<"signin" | "signup">("signin");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -23,24 +21,30 @@ export function LoginForm({ next, initialError }: { next: string; initialError?:
     setError("");
     setSuccessMsg("");
 
-    const supabase = createClient();
-    const { error: signInError } = await supabase.auth.signInWithPassword({
-      email: email.trim().toLowerCase(),
-      password,
-    });
+    const formData = new FormData();
+    formData.append("email", email.trim().toLowerCase());
+    formData.append("password", password);
+    formData.append("next", next);
 
-    setBusy(false);
-    if (signInError) {
-      if (signInError.message.toLowerCase().includes("invalid login credentials")) {
-        setError("Invalid email or password. Please check your credentials or create an account.");
-      } else {
-        setError(signInError.message);
-      }
+    const res = await signInAction(formData);
+    if (res.error) {
+      setBusy(false);
+      setError(res.error);
       return;
     }
 
-    router.replace(next);
-    router.refresh();
+    // Also sync client Supabase cookie/session
+    try {
+      const supabase = createClient();
+      await supabase.auth.signInWithPassword({
+        email: email.trim().toLowerCase(),
+        password,
+      });
+    } catch {
+      // Ignore client sync error if server action already succeeded
+    }
+
+    window.location.href = res.target || next || "/dashboard";
   }
 
   async function handleSignUp(e: React.FormEvent) {
@@ -79,13 +83,12 @@ export function LoginForm({ next, initialError }: { next: string; initialError?:
       password,
     });
 
-    setBusy(false);
     if (signInErr) {
+      setBusy(false);
       setError("Account created! Please sign in with your password.");
       setTab("signin");
     } else {
-      router.replace(next);
-      router.refresh();
+      window.location.href = `/onboarding?next=${encodeURIComponent(next || "/dashboard")}`;
     }
   }
 
