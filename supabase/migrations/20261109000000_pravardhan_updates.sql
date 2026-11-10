@@ -118,3 +118,4 @@ returns json language sql stable security definer set search_path = public as $$
      or upper(coalesce(p.reg_no, '')) = upper(trim(p_member_no))
   limit 1;
 $$;
+

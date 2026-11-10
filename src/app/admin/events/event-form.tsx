@@ -1,3 +1,5 @@
+"use client";
+
 import { ActionForm } from "@/components/forms";
 import { CATEGORY_LABELS, toLocalInput } from "@/lib/format";
 import type { Edition, EventRow, PaymentAccount } from "@/lib/types";

@@ -167,3 +167,4 @@ export function UpdatesClient({ posts }: { posts: Post[] }) {
     </div>
   );
 }
+

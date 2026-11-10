@@ -1,3 +1,5 @@
+"use client";
+
 import { ActionForm } from "@/components/forms";
 import { savePost, deletePost } from "../actions";
 

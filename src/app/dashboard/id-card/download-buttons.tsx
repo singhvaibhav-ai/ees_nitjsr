@@ -22,3 +22,4 @@ export function IdCardActions({ memberNo }: { memberNo: string }) {
     </div>
   );
 }
+
